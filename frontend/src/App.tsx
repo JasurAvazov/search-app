@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import axios, { CancelTokenSource } from 'axios';
 import InputMask from 'react-input-mask';
 
+import styles from './styles/modules/App.module.scss'
+
 interface User {
   email: string;
   number: string;
@@ -14,7 +16,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cancelTokenSource = useRef<CancelTokenSource | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateEmail(email)) {
@@ -51,26 +53,39 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <div className={styles.inputWithTitle}>
+          <label className={styles.title}>Email</label>
+          <input
+            className={styles.input}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-        <div>
-          <label>Number:</label>
-          <InputMask mask="99-99-99" value={number} onChange={(e) => setNumber(e.target.value)} />
+        <div className={styles.inputWithTitle}>
+          <label className={styles.title}>Number:</label>
+          <InputMask
+            className={styles.input}
+            mask="99-99-99"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+          />
         </div>
         <button type="submit">Submit</button>
       </form>
       {isLoading && <p>Loading...</p>}
-      <ul>
-        {results.map((user, index) => (
-          <li key={index}>
-            {user.email} - {user.number}
-          </li>
-        ))}
-      </ul>
+      {results.length > 0 &&
+        <div className={styles.list}>
+          {results.map((user, index) => (
+            <div key={index} className={styles.item}>
+              {user.email} - {user.number}
+            </div>
+          ))}
+        </div>
+      }
     </div>
   );
 };
